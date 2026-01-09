@@ -61,6 +61,18 @@ header {
   padding: 40px 0;
 }
 
+/* class=message-container   メッセージエリア*/
+.message-container {
+  margin-bottom: 20px;
+  font-size: 2em;
+  font-weight: bold;
+  overflow: hidden;
+}
+
+.js-hidden {
+  display: none;
+}
+
 /**************************************************/
 /* class=squares-container                        */
 /**************************************************/
@@ -84,6 +96,35 @@ header {
   width: calc(196px / 3);
   height: calc(196px / 3);
   border: solid 2px #333;
+}
+
+/* penguins */
+.js-pen-checked::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 61px;
+  height: 61px;
+  content: ''; /*画像だけ表示したい場合は空にする。*/
+  background-image: url(../img/penguins.jpg);
+  background-size:contain;
+}
+
+/* bear */
+.js-bear-checked::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 61px;
+  height: 61px;
+  content: ''; /*画像だけ表示したい場合は空にする。*/
+  background-image: url(../img/whitebear.jpg);
+  background-size:contain;
+}
+
+/* protect : ホバーやクリックなどのマウスイベントを無効（むこう）にする*/
+.js-unclickable {
+  pointer-events: none;
 }
 
 /**************************************************/
