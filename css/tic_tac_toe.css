@@ -184,3 +184,17 @@ footer> p {
 .js-bear_highLight {
   border: solid 2px blue;
 }
+
+/************************************************************/
+/* New Game ボタン                                          */
+/************************************************************/
+/* class = ".btn-container" */
+.btn-container {
+  padding-top: 40px;
+}
+
+/* id = "btn90" */
+#btn90:hover {
+  background-color: #ffd347;
+  transition-duration: 0.4s;
+}

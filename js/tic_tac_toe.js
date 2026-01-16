@@ -239,5 +239,33 @@ function gameOver(status) { //
         });
     }
 }
-
+/************************************************************/
+/* New Game ボタン                                          */
+/************************************************************/
 // NewGameボタン クリック時、ゲーム初期化
+const newgamebtn_display = document.getElementById("newgame-btn");
+const newgamebtn = document.getElementById("btn90");
+
+//Display NewGameボタン
+newgamebtn_display.classList.remove("js-hidden");
+
+newgamebtn.addEventListener("click", function(){
+    //pengunis btn
+    flag = "pen-flag";
+
+    //ターン数カウンター
+    counter = 9;
+
+    winningLine = null;
+    squaresArray.forEach(function(square){
+        square.classList.remove("js-pen-checked");
+        square.classList.remove("js-bear-checked");
+        square.classList.remove("js-unclickable");
+        square.classList.remove("js-pen_highLight");
+        square.classList.remove("js-bear_highLight");
+    });
+    setMessage("pen-turn");
+    newgamebtn_display.classList.add("js-hidden");
+    //stop snowfall
+    $(document).snowfall("clear");
+});
