@@ -47,6 +47,8 @@ const msgtxt3 = '<p class="image"><img src="img/penguins.jpg" width=61px height=
 const msgtxt4 = '<p class="image"><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text animate__animated animate__lightSpeedInLeft">WhiteBear Win!!</p>';
 const msgtxt5 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text animate__bounceIn">Draw!!</p>';
 
+//sound effect
+let gameSound = ["sound/click_sound1.mp3","sound/click_sound2.mp3","sound/penwin_sound.mp3","sound/bearwin_sound.mp3","sound/draw_sound.mp3"];
 // ページ本体が読み込まれたタイミングで実行するコード
 window.addEventListener("DOMContentLoaded",
     function() {
@@ -110,6 +112,11 @@ c_3.addEventListener("click", () => {
 function isSelect(selectSquare) {
 
     if (flag === "pen-flag") {
+
+    // click sound ef
+    let music = new Audio(gameSound[0]);
+    music.currentTime = 0;
+    music.play();
         // Penguins turn
         selectSquare.classList.add("js-pen-checked");
         selectSquare.classList.add("js-unclickable");
@@ -125,6 +132,10 @@ function isSelect(selectSquare) {
         flag = "bear-flag";
 
     } else {
+        // click sound ef
+        let music = new Audio(gameSound[1]);
+        music.currentTime = 0;
+        music.play();
         // Bear turn
         selectSquare.classList.add("js-bear-checked");
         selectSquare.classList.add("js-unclickable");
@@ -198,6 +209,22 @@ function setMessage(id) {
 
 // ゲーム終了時の処理
 function gameOver(status) { //
+    //Game over sound ef
+    let w_sound;
+    switch (status) {
+        case "penguins":
+            w_sound = gameSound[2];
+            break;
+        case "bear":
+            w_sound = gameSound[3];
+            break;
+        case "draw":
+            w_sound = gameSound[4];
+            break;
+    }
+    let music = new Audio(w_sound);
+    music.currentTime = 0;
+    music.play();
     // all square unclickable
     squaresArray.forEach(function(square) { // B
         square.classList.add("js-unclickable");
@@ -238,6 +265,7 @@ function gameOver(status) { //
             round: true // 雪の形を丸にする
         });
     }
+    newgamebtn_display.classList.remove("js-hidden");
 }
 /************************************************************/
 /* New Game ボタン                                          */
@@ -247,7 +275,7 @@ const newgamebtn_display = document.getElementById("newgame-btn");
 const newgamebtn = document.getElementById("btn90");
 
 //Display NewGameボタン
-newgamebtn_display.classList.remove("js-hidden");
+
 
 newgamebtn.addEventListener("click", function(){
     //pengunis btn
