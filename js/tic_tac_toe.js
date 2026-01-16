@@ -1,14 +1,20 @@
 "use strict";
 
 // flag
-// "pen-flag"のときpenguinsのターン、 "bear-flag"のときbearのターン
-let flag = "pen-flag"; // A: Đáp án từ hình ảnh
+let flag = "pen-flag";
 
 // ターン数カウンター
-let counter = 9; // C: Đáp án (9 ô)
+let counter = 9;
+
+// class="square" を取得
+const squares = document.getElementsByClassName("square"); //
+
+// Array に変換
+// https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+const squaresArray = Array.from(squares); //
 
 // squaresの要素を取得
-const a_1 = document.getElementById("a_1"); // D: Đáp án
+const a_1 = document.getElementById("a_1");
 const a_2 = document.getElementById("a_2");
 const a_3 = document.getElementById("a_3");
 const b_1 = document.getElementById("b_1");
@@ -18,13 +24,28 @@ const c_1 = document.getElementById("c_1");
 const c_2 = document.getElementById("c_2");
 const c_3 = document.getElementById("c_3");
 
-// NewGameボタン取得 (Chưa có trong bài này)
+// NewGameボタン取得
 
-// Win or Lose Judgment Line (Chưa có trong bài này)
+// Win or Lose Judgment Line
+const line1 = JudgLine(squaresArray, ["a_1", "a_2", "a_3"]); //
+const line2 = JudgLine(squaresArray, ["b_1", "b_2", "b_3"]); //
+const line3 = JudgLine(squaresArray, ["c_1", "c_2", "c_3"]); //
+const line4 = JudgLine(squaresArray, ["a_1", "b_1", "c_1"]); //
+const line5 = JudgLine(squaresArray, ["a_2", "b_2", "c_2"]); //
+const line6 = JudgLine(squaresArray, ["a_3", "b_3", "c_3"]); //
+const line7 = JudgLine(squaresArray, ["a_1", "b_2", "c_3"]); //
+const line8 = JudgLine(squaresArray, ["a_3", "b_2", "c_1"]); //
+
+const lineArray = [line1, line2, line3, line4, line5, line6, line7, line8]; //
+
+let winningLine = null; //
 
 // メッセージ
 const msgtxt1 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px></p><p class="text">Penguins Attack!</p>';
 const msgtxt2 = '<p class="image"><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text">WhiteBear Attack!</p>';
+const msgtxt3 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px></p><p class="text animate__animated animate__lightSpeedInRight">Penguins Win!!</p>'; //
+const msgtxt4 = '<p class="image"><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text animate__animated animate__lightSpeedInLeft">WhiteBear Win!!</p>'; //
+const msgtxt5 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text animate__bounceIn">Draw!!</p>'; //
 
 // ページ本体が読み込まれたタイミングで実行するコード
 window.addEventListener("DOMContentLoaded",
@@ -34,18 +55,24 @@ window.addEventListener("DOMContentLoaded",
     }, false
 );
 
+// Win or Lose Judgment Lineを配列化
+// JavaScriptでfilterを使う方法: https://techacademy.jp/magazine/15575
+function JudgLine(targetArray, idArray) { //
+    return targetArray.filter(function(e) {
+        return (e.id === idArray[0] || e.id === idArray[1] || e.id === idArray[2]);
+    });
+}
+
 // squareをクリックしたときにイベント発火
 // クリックしたsquareに、penguinsかbearを表示。画像を表示したsquareはクリックできないようにする
 // Win or Lose Judgementの呼び出し
 
-// E-1: Cách viết đầy đủ (Longhand) cho ô a_1
 a_1.addEventListener("click",
     function() {
         isSelect(a_1);
     }, false
 );
 
-// E-2 ~ E-9: Cách viết tắt (Shorthand) cho các ô còn lại
 a_2.addEventListener("click", () => {
     isSelect(a_2);
 });
@@ -84,35 +111,35 @@ function isSelect(selectSquare) {
 
     if (flag === "pen-flag") {
         // Penguins turn
-        // F-1: Thêm class hiển thị hình chim cánh cụt
-        selectSquare.classList.add("js-pen-checked"); //
+        selectSquare.classList.add("js-pen-checked");
+        selectSquare.classList.add("js-unclickable");
 
-        // G: Khóa ô lại không cho click nữa
-        selectSquare.classList.add("js-unclickable"); //
+        // penguins win
+        if (isWinner("penguins")) { //
+            setMessage("pen-win");
+            return;
+        }
 
-        // H-1: Đổi thông báo sang lượt của Gấu
-        setMessage("bear-turn"); //
-        
-        // B: Đổi cờ sang Gấu
-        flag = "bear-flag"; //
+        setMessage("bear-turn");
+        flag = "bear-flag";
 
     } else {
         // Bear turn
-        // F-2: Thêm class hiển thị hình gấu trắng
-        selectSquare.classList.add("js-bear-checked"); //
+        selectSquare.classList.add("js-bear-checked");
+        selectSquare.classList.add("js-unclickable");
 
-        // G: Khóa ô lại không cho click nữa
-        selectSquare.classList.add("js-unclickable"); //
+        // white-bear win
+        if (isWinner("bear")) { //
+            setMessage("bear-win");
+            return;
+        }
 
-        // H-2: Đổi thông báo sang lượt của Chim cánh cụt
-        setMessage("pen-turn"); //
-
-        // A: Đổi cờ sang Chim cánh cụt
-        flag = "pen-flag"; //
+        setMessage("pen-turn");
+        flag = "pen-flag";
     }
 
-    // i: Giảm số lượt đi còn lại
-    counter--; //
+    // ターン数カウンターを-1する
+    counter--;
 
     // ターン数=0になったらDRAW
     if (counter === 0) {
@@ -120,8 +147,30 @@ function isSelect(selectSquare) {
     }
 }
 
+// 勝敗判定
+// classListの使い方まとめ: https://qiita.com/tomokichi_ruby/items/2460c5902d19b81cace5
+function isWinner(symbol) { //
+    const result = lineArray.some(function(line) {
+        // every: 全て条件を満たしていればTrueを返す
+        const subResult = line.every(function(square) {
+            if (symbol === "penguins") {
+                return square.classList.contains("js-pen-checked"); //
+            }
+            if (symbol === "bear") {
+                return square.classList.contains("js-bear-checked"); //
+            }
+        });
+        // trueを返したlineをwinningLineに代入
+        if (subResult) {
+            winningLine = line
+        }
+
+        return subResult;
+    });
+    return result;
+}
+
 // メッセージ切り替え関数
-// J: Hàm setMessage hoàn chỉnh
 function setMessage(id) {
     switch (id) {
         case "pen-turn":
@@ -130,11 +179,20 @@ function setMessage(id) {
         case "bear-turn":
             document.getElementById("msgtext").innerHTML = msgtxt2;
             break;
+        case "pen-win": //
+            document.getElementById("msgtext").innerHTML = msgtxt3;
+            break;
+        case "bear-win": //
+            document.getElementById("msgtext").innerHTML = msgtxt4;
+            break;
+        case "draw": //
+            document.getElementById("msgtext").innerHTML = msgtxt5;
+            break;
         default:
             document.getElementById("msgtext").innerHTML = msgtxt1;
     }
 }
 
-// ゲーム終了時の処理 (Chưa có trong bài này)
+// ゲーム終了時の処理
 
-// NewGameボタン クリック時、ゲーム初期化 (Chưa có trong bài này)
+// NewGameボタン クリック時、ゲーム初期化
