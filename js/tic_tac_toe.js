@@ -7,11 +7,11 @@ let flag = "pen-flag";
 let counter = 9;
 
 // class="square" を取得
-const squares = document.getElementsByClassName("square"); //
+const squares = document.getElementsByClassName("square");
 
 // Array に変換
 // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/from
-const squaresArray = Array.from(squares); //
+const squaresArray = Array.from(squares);
 
 // squaresの要素を取得
 const a_1 = document.getElementById("a_1");
@@ -27,25 +27,25 @@ const c_3 = document.getElementById("c_3");
 // NewGameボタン取得
 
 // Win or Lose Judgment Line
-const line1 = JudgLine(squaresArray, ["a_1", "a_2", "a_3"]); //
-const line2 = JudgLine(squaresArray, ["b_1", "b_2", "b_3"]); //
-const line3 = JudgLine(squaresArray, ["c_1", "c_2", "c_3"]); //
-const line4 = JudgLine(squaresArray, ["a_1", "b_1", "c_1"]); //
-const line5 = JudgLine(squaresArray, ["a_2", "b_2", "c_2"]); //
-const line6 = JudgLine(squaresArray, ["a_3", "b_3", "c_3"]); //
-const line7 = JudgLine(squaresArray, ["a_1", "b_2", "c_3"]); //
-const line8 = JudgLine(squaresArray, ["a_3", "b_2", "c_1"]); //
+const line1 = JudgLine(squaresArray, ["a_1", "a_2", "a_3"]);
+const line2 = JudgLine(squaresArray, ["b_1", "b_2", "b_3"]);
+const line3 = JudgLine(squaresArray, ["c_1", "c_2", "c_3"]);
+const line4 = JudgLine(squaresArray, ["a_1", "b_1", "c_1"]);
+const line5 = JudgLine(squaresArray, ["a_2", "b_2", "c_2"]);
+const line6 = JudgLine(squaresArray, ["a_3", "b_3", "c_3"]);
+const line7 = JudgLine(squaresArray, ["a_1", "b_2", "c_3"]);
+const line8 = JudgLine(squaresArray, ["a_3", "b_2", "c_1"]);
 
-const lineArray = [line1, line2, line3, line4, line5, line6, line7, line8]; //
+const lineArray = [line1, line2, line3, line4, line5, line6, line7, line8];
 
-let winningLine = null; //
+let winningLine = null;
 
 // メッセージ
 const msgtxt1 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px></p><p class="text">Penguins Attack!</p>';
 const msgtxt2 = '<p class="image"><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text">WhiteBear Attack!</p>';
-const msgtxt3 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px></p><p class="text animate__animated animate__lightSpeedInRight">Penguins Win!!</p>'; //
-const msgtxt4 = '<p class="image"><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text animate__animated animate__lightSpeedInLeft">WhiteBear Win!!</p>'; //
-const msgtxt5 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text animate__bounceIn">Draw!!</p>'; //
+const msgtxt3 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px></p><p class="text animate__animated animate__lightSpeedInRight">Penguins Win!!</p>';
+const msgtxt4 = '<p class="image"><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text animate__animated animate__lightSpeedInLeft">WhiteBear Win!!</p>';
+const msgtxt5 = '<p class="image"><img src="img/penguins.jpg" width=61px height=61px><img src="img/whitebear.jpg" width=61px height=61px></p><p class="text animate__bounceIn">Draw!!</p>';
 
 // ページ本体が読み込まれたタイミングで実行するコード
 window.addEventListener("DOMContentLoaded",
@@ -57,7 +57,7 @@ window.addEventListener("DOMContentLoaded",
 
 // Win or Lose Judgment Lineを配列化
 // JavaScriptでfilterを使う方法: https://techacademy.jp/magazine/15575
-function JudgLine(targetArray, idArray) { //
+function JudgLine(targetArray, idArray) {
     return targetArray.filter(function(e) {
         return (e.id === idArray[0] || e.id === idArray[1] || e.id === idArray[2]);
     });
@@ -115,8 +115,9 @@ function isSelect(selectSquare) {
         selectSquare.classList.add("js-unclickable");
 
         // penguins win
-        if (isWinner("penguins")) { //
+        if (isWinner("penguins")) {
             setMessage("pen-win");
+            gameOver("penguins"); // A-1
             return;
         }
 
@@ -129,8 +130,9 @@ function isSelect(selectSquare) {
         selectSquare.classList.add("js-unclickable");
 
         // white-bear win
-        if (isWinner("bear")) { //
+        if (isWinner("bear")) {
             setMessage("bear-win");
+            gameOver("bear"); // A-2
             return;
         }
 
@@ -144,20 +146,21 @@ function isSelect(selectSquare) {
     // ターン数=0になったらDRAW
     if (counter === 0) {
         setMessage("draw");
+        gameOver("draw"); // A-3
     }
 }
 
 // 勝敗判定
 // classListの使い方まとめ: https://qiita.com/tomokichi_ruby/items/2460c5902d19b81cace5
-function isWinner(symbol) { //
+function isWinner(symbol) {
     const result = lineArray.some(function(line) {
         // every: 全て条件を満たしていればTrueを返す
         const subResult = line.every(function(square) {
             if (symbol === "penguins") {
-                return square.classList.contains("js-pen-checked"); //
+                return square.classList.contains("js-pen-checked");
             }
             if (symbol === "bear") {
-                return square.classList.contains("js-bear-checked"); //
+                return square.classList.contains("js-bear-checked");
             }
         });
         // trueを返したlineをwinningLineに代入
@@ -179,13 +182,13 @@ function setMessage(id) {
         case "bear-turn":
             document.getElementById("msgtext").innerHTML = msgtxt2;
             break;
-        case "pen-win": //
+        case "pen-win":
             document.getElementById("msgtext").innerHTML = msgtxt3;
             break;
-        case "bear-win": //
+        case "bear-win":
             document.getElementById("msgtext").innerHTML = msgtxt4;
             break;
-        case "draw": //
+        case "draw":
             document.getElementById("msgtext").innerHTML = msgtxt5;
             break;
         default:
@@ -194,5 +197,47 @@ function setMessage(id) {
 }
 
 // ゲーム終了時の処理
+function gameOver(status) { //
+    // all square unclickable
+    squaresArray.forEach(function(square) { // B
+        square.classList.add("js-unclickable");
+    });
+
+    // winEffect
+    if (status === "penguins") {
+        // winner-line penguins high-light
+        if (winningLine) {
+            winningLine.forEach(function(square) { // C-1
+                square.classList.add("js-pen_highLight");
+            });
+        }
+        // penguins win!! ==>snow color is pink
+        $(document).snowfall({
+            flakeColor: "rgb(255,240,245)", // 雪の色
+            maxSpeed: 3, // 最大速度
+            minSpeed: 1, // 最小速度
+            maxSize: 20, // 最大サイズ
+            minSize: 10, // 最小サイズ
+            round: true // 雪の形を丸にする
+        });
+
+    } else if (status === "bear") {
+        // winner-line bear high-light
+        if (winningLine) {
+            winningLine.forEach(function(square) { // C-2
+                square.classList.add("js-bear_highLight");
+            });
+        }
+        // whitebear win!! ==>snow color is blue
+        $(document).snowfall({
+            flakeColor: "rgb(175,238,238)", // 雪の色
+            maxSpeed: 3, // 最大速度
+            minSpeed: 1, // 最小速度
+            maxSize: 20, // 最大サイズ
+            minSize: 10, // 最小サイズ
+            round: true // 雪の形を丸にする
+        });
+    }
+}
 
 // NewGameボタン クリック時、ゲーム初期化

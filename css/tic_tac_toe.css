@@ -178,3 +178,9 @@ footer> p {
     padding-top: 2px;
   }
 }
+.js-pen_highLight {
+  border: solid 2px red;
+}
+.js-bear_highLight {
+  border: solid 2px blue;
+}
