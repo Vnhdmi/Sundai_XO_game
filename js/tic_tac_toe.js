@@ -254,7 +254,20 @@ newgamebtn.addEventListener("click", function() {
 
 // クマのターン
 function bearTurn() {
+    let bearTurnEnd = "0";
     let gameOverFlg = "0";
+    while (bearTurnEnd === "0") {
+    
+        bearTurnEnd = isReach("bear");
+        if (bearTurnEnd === "1") {
+            gameOverFlg = "1";
+            break;
+        }
+        
+        bearTurnEnd = isReach("penguins");
+        if (bearTurnEnd === "1") {
+            break;
+        }
 
     // クリックできるマス目を抽出する。
     const bearSquare = squaresArray.filter(function(square) {
@@ -266,10 +279,56 @@ function bearTurn() {
 
     // 選択したマス目の処理
     gameOverFlg = isSelect(bearSquare[n]);
+    break;
+    }
 
     // GameOverではない場合、マス目のエリアをクリックできるようにする。
     if (gameOverFlg === "0") {
         const squaresBox = document.getElementById("squaresBox");
         squaresBox.classList.remove("js-unclickable");
     }
+}
+
+// ***********************************************
+// リーチ行をさがす
+// ***********************************************
+function isReach(status) {
+  let bearTurnEnd = "0";  // クマのターン "1":終了
+
+  lineArray.some(function (line) {
+    let bearCheckCnt = 0;  // クマがチェックされている数
+    let penCheckCnt = 0;   // ペンギンがチェックされている数
+
+    line.forEach(function (square) {
+      if (square.classList.contains("js-bear-checked")) {
+        bearCheckCnt++; // クマがチェックされている数
+      }
+      if (square.classList.contains("js-pen-checked")) {
+        penCheckCnt++; // ペンギンがチェックされている数
+      }
+    });
+
+    // クマのリーチ行検索時に、クマのリーチ行あり
+    if (status === "bear" && bearCheckCnt === 2 && penCheckCnt === 0) {
+      bearTurnEnd = "1"; // クマのリーチ行あり
+    }
+
+    // ペンギンのリーチ行検索時に、ペンギンのリーチ行あり
+    if (status === "penguins" && bearCheckCnt === 0 && penCheckCnt === 2) {
+      bearTurnEnd = "1"; // クマのリーチ行あり
+    }
+
+    // クマかペンギンのリーチ行ありの場合、空いているマス目を選択する
+    if (bearTurnEnd === "1") {
+      line.some(function (square) {
+        if (square.classList.contains("js-clickable")) {
+          isSelect(square);
+          return true; // line378 の line.some の loop をぬける
+        }
+      })
+      return true; // line353 の lineArray.some の loop をぬける
+    }
+  });
+
+  return bearTurnEnd;
 }
