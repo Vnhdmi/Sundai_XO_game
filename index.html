@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,20 +12,20 @@
 </head>
 
 <body>
-    <div class = "back">
+    <div class="back">
         <button id="btn99" class="btn" type="button" onclick="history.back()">back</button>
     </div>
 
     <div class="wrapper">
-        <header>Tic Tac Toe</header>
+        <header>Tic Tac Toe VS COMPUTER </header>
 
         <div class="game-container">
             <div class="message-container">
                 <div id="msgtext"></div>
             </div>
-            
+
             <div class="squares-container">
-                <div class="squares-box">
+                <div class="squares-box" id="squaresBox">
                     <div class="square" id="a_1"></div>
                     <div class="square" id="a_2"></div>
                     <div class="square" id="a_3"></div>
@@ -37,8 +38,8 @@
                 </div>
             </div>
             <div class="btn-container">
-                <div class ="js-hidden" id ="newgame-btn">
-                        <button id ="btn90" class ="btn" type="button">New Game</button>
+                <div class="js-hidden" id="newgame-btn">
+                    <button id="btn90" class="btn" type="button">New Game</button>
                 </div>
             </div>
         </div>
@@ -53,4 +54,5 @@
     <script src="js/tic_tac_toe.js"></script>
 
 </body>
+
 </html>
