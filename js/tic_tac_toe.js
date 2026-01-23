@@ -23,6 +23,14 @@ const c_1 = document.getElementById("c_1");
 const c_2 = document.getElementById("c_2");
 const c_3 = document.getElementById("c_3");
 
+//class="level" を取得
+const levels = document.querySelectorAll(".level");
+// Array に変換
+const level_1 = document.getElementById("level_1");
+const level_2 = document.getElementById("level_2");
+const level_3 = document.getElementById("level_3");
+
+
 // Win or Lose Judgment Line
 const line1 = JudgLine(squaresArray, ["a_1", "a_2", "a_3"]);
 const line2 = JudgLine(squaresArray, ["b_1", "b_2", "b_3"]);
@@ -35,6 +43,7 @@ const line8 = JudgLine(squaresArray, ["a_3", "b_2", "c_1"]);
 
 const lineArray = [line1, line2, line3, line4, line5, line6, line7, line8];
 
+const lineRandom = cornerLine(squaresArray, ["a_1", "a_3", "c_1", "c_3"]);
 let winningLine = null;
 
 // メッセージ
@@ -49,26 +58,84 @@ let gameSound = ["sound/click_sound1.mp3", "sound/click_sound2.mp3", "sound/penw
 
 // 本体が読み込まれたタイミングで実行がるコード
 window.addEventListener("DOMContentLoaded",
-    function() {
+    function () {
         // メッセージ (最初はpenguins ターンから)
         setMessage("pen-turn");
         // squareがクリック可能かを判断するクラスを追加
-        squaresArray.forEach(function(square) {
+        squaresArray.forEach(function (square) {
             square.classList.add("js-clickable");
         });
+
+        LevelSetting(0); // default level 1
+
+        // level ボタン クリック時、レベル設定
+        let index;
+        levels.forEach((level) => {
+            level.addEventListener("click", () => {
+                index = [].slice.call(levels).indexOf(level);
+                LevelSetting(index);
+            });
+        });
+
     }, false
 );
 
 // Win or Lose Judgment Lineを配列化
 function JudgLine(targetArray, idArray) {
-    return targetArray.filter(function(e) {
+    return targetArray.filter(function (e) {
         return (e.id === idArray[0] || e.id === idArray[1] || e.id === idArray[2]);
+    });
+}
+
+// レベル設定　ボタン　
+function LevelSetting(index) {
+    level_1.classList.remove("level-selected");
+    level_2.classList.remove("level-selected");
+    level_3.classList.remove("level-selected");
+    level_1.classList.remove("level_non_selected");
+    level_2.classList.remove("level_non_selected");
+    level_3.classList.remove("level_non_selected");
+
+    if (sessionStorage.getItem("tic_tac_toe_access")) {
+        switch (index) {
+            case 0:
+                sessionStorage.setItem("tic_tac_toe_access", "1");
+                level_1.classList.add("level-selected");
+                level_2.classList.add("level_non_selected");
+                level_3.classList.add("level_non_selected");
+                break;
+            case 1:
+                sessionStorage.setItem("tic_tac_toe_access", "2");
+                level_1.classList.add("level_non_selected");
+                level_2.classList.add("level-selected");
+                level_3.classList.add("level_non_selected");
+                break;
+            case 2:
+                sessionStorage.setItem("tic_tac_toe_access", "3");
+                level_1.classList.add("level_non_selected");
+                level_2.classList.add("level_non_selected");
+                level_3.classList.add("level-selected");
+                break;
+        }
+
+
+    } else {
+        sessionStorage.setItem("tic_tac_toe_access", "1");
+        level_1.classList.add("level-selected");
+        level_2.classList.add("level_non_selected");
+        level_3.classList.add("level_non_selected");
+    }
+}
+
+function cornerLine(targetArray, idArray) {
+    return targetArray.filter(function (e) {
+        return (e.id === idArray[0] || e.id === idArray[1] || e.id === idArray[2] || e.id === idArray[3]);
     });
 }
 
 // squareをクリックしたときにイベント発火(はっか)
 // クリックしたsquareに、penguinsかbearを表示。画像を表示した
-squaresArray.forEach(function(square) {
+squaresArray.forEach(function (square) {
     square.addEventListener('click', () => {
         let gameOverFlg = isSelect(square);
 
@@ -78,7 +145,7 @@ squaresArray.forEach(function(square) {
             squaresBox.classList.add("js-unclickable");
 
             setTimeout(
-                function() {
+                function () {
                     bearTurn();
                 },
                 "2000"
@@ -147,8 +214,8 @@ function isSelect(selectSquare) {
 
 // 勝敗判定
 function isWinner(symbol) {
-    const result = lineArray.some(function(line) {
-        const subResult = line.every(function(square) {
+    const result = lineArray.some(function (line) {
+        const subResult = line.every(function (square) {
             if (symbol === "penguins") {
                 return square.classList.contains("js-pen-checked");
             }
@@ -224,7 +291,7 @@ const newgamebtn_display = document.getElementById("newgame-btn");
 const newgamebtn = document.getElementById("btn90");
 
 // NewGameボタン クリック時、ゲーム初期化
-newgamebtn.addEventListener("click", function() {
+newgamebtn.addEventListener("click", function () {
     // penguins ターン
     flag = "pen-flag";
 
@@ -232,7 +299,7 @@ newgamebtn.addEventListener("click", function() {
     counter = 9;
 
     winningLine = null;
-    squaresArray.forEach(function(square) {
+    squaresArray.forEach(function (square) {
         square.classList.remove("js-pen-checked");
         square.classList.remove("js-bear-checked");
         square.classList.remove("js-unclickable");
@@ -257,29 +324,29 @@ function bearTurn() {
     let bearTurnEnd = "0";
     let gameOverFlg = "0";
     while (bearTurnEnd === "0") {
-    
+
         bearTurnEnd = isReach("bear");
         if (bearTurnEnd === "1") {
             gameOverFlg = "1";
             break;
         }
-        
+
         bearTurnEnd = isReach("penguins");
         if (bearTurnEnd === "1") {
             break;
         }
 
-    // クリックできるマス目を抽出する。
-    const bearSquare = squaresArray.filter(function(square) {
-        return square.classList.contains("js-clickable");
-    });
+        // クリックできるマス目を抽出する。
+        const bearSquare = squaresArray.filter(function (square) {
+            return square.classList.contains("js-clickable");
+        });
 
-    // クリックできるマス目の中から、1つをランダムに選ぶ。
-    let n = Math.floor(Math.random() * bearSquare.length);
+        // クリックできるマス目の中から、1つをランダムに選ぶ。
+        let n = Math.floor(Math.random() * bearSquare.length);
 
-    // 選択したマス目の処理
-    gameOverFlg = isSelect(bearSquare[n]);
-    break;
+        // 選択したマス目の処理
+        gameOverFlg = isSelect(bearSquare[n]);
+        break;
     }
 
     // GameOverではない場合、マス目のエリアをクリックできるようにする。
@@ -293,42 +360,42 @@ function bearTurn() {
 // リーチ行をさがす
 // ***********************************************
 function isReach(status) {
-  let bearTurnEnd = "0";  // クマのターン "1":終了
+    let bearTurnEnd = "0";  // クマのターン "1":終了
 
-  lineArray.some(function (line) {
-    let bearCheckCnt = 0;  // クマがチェックされている数
-    let penCheckCnt = 0;   // ペンギンがチェックされている数
+    lineArray.some(function (line) {
+        let bearCheckCnt = 0;  // クマがチェックされている数
+        let penCheckCnt = 0;   // ペンギンがチェックされている数
 
-    line.forEach(function (square) {
-      if (square.classList.contains("js-bear-checked")) {
-        bearCheckCnt++; // クマがチェックされている数
-      }
-      if (square.classList.contains("js-pen-checked")) {
-        penCheckCnt++; // ペンギンがチェックされている数
-      }
+        line.forEach(function (square) {
+            if (square.classList.contains("js-bear-checked")) {
+                bearCheckCnt++; // クマがチェックされている数
+            }
+            if (square.classList.contains("js-pen-checked")) {
+                penCheckCnt++; // ペンギンがチェックされている数
+            }
+        });
+
+        // クマのリーチ行検索時に、クマのリーチ行あり
+        if (status === "bear" && bearCheckCnt === 2 && penCheckCnt === 0) {
+            bearTurnEnd = "1"; // クマのリーチ行あり
+        }
+
+        // ペンギンのリーチ行検索時に、ペンギンのリーチ行あり
+        if (status === "penguins" && bearCheckCnt === 0 && penCheckCnt === 2) {
+            bearTurnEnd = "1"; // クマのリーチ行あり
+        }
+
+        // クマかペンギンのリーチ行ありの場合、空いているマス目を選択する
+        if (bearTurnEnd === "1") {
+            line.some(function (square) {
+                if (square.classList.contains("js-clickable")) {
+                    isSelect(square);
+                    return true; // line378 の line.some の loop をぬける
+                }
+            })
+            return true; // line353 の lineArray.some の loop をぬける
+        }
     });
 
-    // クマのリーチ行検索時に、クマのリーチ行あり
-    if (status === "bear" && bearCheckCnt === 2 && penCheckCnt === 0) {
-      bearTurnEnd = "1"; // クマのリーチ行あり
-    }
-
-    // ペンギンのリーチ行検索時に、ペンギンのリーチ行あり
-    if (status === "penguins" && bearCheckCnt === 0 && penCheckCnt === 2) {
-      bearTurnEnd = "1"; // クマのリーチ行あり
-    }
-
-    // クマかペンギンのリーチ行ありの場合、空いているマス目を選択する
-    if (bearTurnEnd === "1") {
-      line.some(function (square) {
-        if (square.classList.contains("js-clickable")) {
-          isSelect(square);
-          return true; // line378 の line.some の loop をぬける
-        }
-      })
-      return true; // line353 の lineArray.some の loop をぬける
-    }
-  });
-
-  return bearTurnEnd;
+    return bearTurnEnd;
 }
