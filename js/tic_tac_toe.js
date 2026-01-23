@@ -63,11 +63,7 @@ window.addEventListener("DOMContentLoaded",
         setMessage("pen-turn");
         // squareがクリック可能かを判断するクラスを追加
         squaresArray.forEach(function (square) {
-            if (counter === 9) {
-                const levelBox = document.getElementById("levelBox");
-                levelBox.classList.add("js-unclickable"); // Khóa level box [cite: 1883]
-            }
-            square.classList.add("js-clickable");
+                                 square.classList.add("js-clickable");
         });
 
         LevelSetting(0); // default level 1
@@ -155,7 +151,7 @@ squaresArray.forEach(function (square) {
                 function () {
                     bearTurn();
                 },
-                "2000"
+                "500"
             );
         }
     });
