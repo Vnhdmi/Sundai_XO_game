@@ -63,6 +63,10 @@ window.addEventListener("DOMContentLoaded",
         setMessage("pen-turn");
         // squareがクリック可能かを判断するクラスを追加
         squaresArray.forEach(function (square) {
+            if (counter === 9) {
+                const levelBox = document.getElementById("levelBox");
+                levelBox.classList.add("js-unclickable"); // Khóa level box [cite: 1883]
+            }
             square.classList.add("js-clickable");
         });
 
@@ -71,7 +75,9 @@ window.addEventListener("DOMContentLoaded",
         // level ボタン クリック時、レベル設定
         let index;
         levels.forEach((level) => {
-            level.addEventListener("click", () => {
+            level.addEventListener("click", (
+
+            ) => {
                 index = [].slice.call(levels).indexOf(level);
                 LevelSetting(index);
             });
@@ -88,42 +94,43 @@ function JudgLine(targetArray, idArray) {
 }
 
 // レベル設定　ボタン　
+// File: js/tic_tac_toe.js
+
 function LevelSetting(index) {
     level_1.classList.remove("level-selected");
     level_2.classList.remove("level-selected");
     level_3.classList.remove("level-selected");
-    level_1.classList.remove("level_non_selected");
-    level_2.classList.remove("level_non_selected");
-    level_3.classList.remove("level_non_selected");
+
+    level_1.classList.remove("level-non-selected");
+    level_2.classList.remove("level-non-selected");
+    level_3.classList.remove("level-non-selected");
 
     if (sessionStorage.getItem("tic_tac_toe_access")) {
         switch (index) {
             case 0:
                 sessionStorage.setItem("tic_tac_toe_access", "1");
                 level_1.classList.add("level-selected");
-                level_2.classList.add("level_non_selected");
-                level_3.classList.add("level_non_selected");
+                level_2.classList.add("level-non-selected");
+                level_3.classList.add("level-non-selected");
                 break;
             case 1:
                 sessionStorage.setItem("tic_tac_toe_access", "2");
-                level_1.classList.add("level_non_selected");
+                level_1.classList.add("level-non-selected");
                 level_2.classList.add("level-selected");
-                level_3.classList.add("level_non_selected");
+                level_3.classList.add("level-non-selected");
                 break;
             case 2:
                 sessionStorage.setItem("tic_tac_toe_access", "3");
-                level_1.classList.add("level_non_selected");
-                level_2.classList.add("level_non_selected");
+                level_1.classList.add("level-non-selected");
+                level_2.classList.add("level-non-selected");
                 level_3.classList.add("level-selected");
                 break;
         }
-
-
     } else {
         sessionStorage.setItem("tic_tac_toe_access", "1");
         level_1.classList.add("level-selected");
-        level_2.classList.add("level_non_selected");
-        level_3.classList.add("level_non_selected");
+        level_2.classList.add("level-non-selected");
+        level_3.classList.add("level-non-selected");
     }
 }
 
@@ -300,6 +307,9 @@ newgamebtn.addEventListener("click", function () {
 
     winningLine = null;
     squaresArray.forEach(function (square) {
+
+        const levelBox = document.getElementById("levelBox");
+        levelBox.classList.remove("js-unclickable");
         square.classList.remove("js-pen-checked");
         square.classList.remove("js-bear-checked");
         square.classList.remove("js-unclickable");
@@ -320,9 +330,14 @@ newgamebtn.addEventListener("click", function () {
 });
 
 // クマのターン
+// クマのターン
 function bearTurn() {
     let bearTurnEnd = "0";
     let gameOverFlg = "0";
+
+    // Thêm: Lấy level hiện tại từ bộ nhớ [cite: 1981]
+    let level = sessionStorage.getItem("tic_tac_toe_access");
+
     while (bearTurnEnd === "0") {
 
         bearTurnEnd = isReach("bear");
@@ -331,25 +346,41 @@ function bearTurn() {
             break;
         }
 
-        bearTurnEnd = isReach("penguins");
-        if (bearTurnEnd === "1") {
-            break;
+        if (level === "2" || level === "3") {
+            bearTurnEnd = isReach("penguins");
+            if (bearTurnEnd === "1") {
+                break;
+            }
         }
 
-        // クリックできるマス目を抽出する。
+        if (level === "2" || level === "3") {
+            if (b_2.classList.contains("js-clickable")) {
+                gameOverFlg = isSelect(b_2);
+                bearTurnEnd = "1";
+                break;
+            }
+        }
+
+        if (level === "3") {
+            for (let square of lineRandom) {
+                if (square.classList.contains("js-clickable")) {
+                    gameOverFlg = isSelect(square);
+                    bearTurnEnd = "1";
+                    break;
+                }
+            }
+            if (bearTurnEnd === "1") break;
+        }
+
         const bearSquare = squaresArray.filter(function (square) {
             return square.classList.contains("js-clickable");
         });
 
-        // クリックできるマス目の中から、1つをランダムに選ぶ。
         let n = Math.floor(Math.random() * bearSquare.length);
-
-        // 選択したマス目の処理
         gameOverFlg = isSelect(bearSquare[n]);
         break;
     }
 
-    // GameOverではない場合、マス目のエリアをクリックできるようにする。
     if (gameOverFlg === "0") {
         const squaresBox = document.getElementById("squaresBox");
         squaresBox.classList.remove("js-unclickable");
